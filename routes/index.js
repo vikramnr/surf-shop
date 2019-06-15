@@ -1,22 +1,23 @@
 const express = require('express');
 const router = express.Router();
+const {
+  postRegister
+} = require('../controllers/index');
 
 // Home page
 router.get('/', (req, res, next) => {
   res.render('index', {
-    title: 'Express'
+    title: 'Surf Shop'
   });
 });
 
 // register form
 router.get('/register', (req, res, next) => {
-  res.send('register here')
+  res.send('register here');
 });
 
 // register user
-router.post('/register', (req, res, next) => {
-  res.send('save user')
-});
+router.post('/register', postRegister);
 
 // user login form
 router.get('/login', (req, res, next) => {
@@ -41,21 +42,22 @@ router.put('/profile/:user_id', (req, res, next) => {
 
 // forgot password
 router.get('/forgot-pw', (req, res, next) => {
-  res.send('enter mail id')
+  res.send('enter mail id');
 });
 
 // update user and token
 router.put('/forgot-pw', (req, res, next) => {
-  res.send('updates user password and token')
+  res.send('updates user password and token');
 });
 
 // get user details for password reset
 router.get('/reset-pw/:id', (req, res, next) => {
-  res.send('enter mail id')
+  res.send('enter mail id');
 });
 
 //update password
 router.put('/reset-pw/:id', (req, res, next) => {
-  res.send('enter mail id')
+  res.send('enter mail id');
 });
 module.exports = router;
+//module.exports = router;
