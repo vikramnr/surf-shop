@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const {
-  postRegister
+  postRegister,postLogin,getLogout
 } = require('../controllers/index');
 const {
   errorHandler
@@ -29,15 +29,7 @@ router.get('/login', (req, res, next) => {
 });
 
 // login user
-router.post('/login',
-  passport.authenticate('local', {
-    failureRedirect: '/login'
-  }),
-  function (req, res) {
-    res.redirect('/');
-  });
-
-
+router.post('/login',postLogin);
 
 // user profile form
 router.get('/profile', (req, res, next) => {
@@ -70,9 +62,6 @@ router.put('/reset-pw/:id', (req, res, next) => {
 });
 
 // logout
-router.get('/logout', (req, res, next) => {
-  req.logout();
-  res.redirect('/login');
-});
+router.get('/logout',getLogout);
 
 module.exports = router;
