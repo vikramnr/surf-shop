@@ -5,7 +5,7 @@ const {
   postRegister,postLogin,getLogout
 } = require('../controllers/index');
 const {
-  errorHandler
+  asyncErrorHandler
 } = require('../middleware/index');
 
 // Home page
@@ -21,7 +21,7 @@ router.get('/register', (req, res, next) => {
 });
 
 // register user
-router.post('/register', errorHandler(postRegister));
+router.post('/register', asyncErrorHandler(postRegister));
 
 // user login form
 router.get('/login', (req, res, next) => {

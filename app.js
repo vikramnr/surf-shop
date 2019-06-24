@@ -1,17 +1,22 @@
 // esversion:6
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
+const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const passport = require('passport');
 const mongoose = require('mongoose');
+const methodOverride = require('method-override');
 const indexRouter = require('./routes/index');
 const postsRouter = require('./routes/posts');
 const revieswRouter = require('./routes/reviews');
 const User = require('./models/user');
 const session = require('express-session');
 const app = express();
+
+app.use(methodOverride('_method'));
 
 // connect to db
 mongoose.connect('mongodb://vikram:viki@ds049848.mlab.com:49848/training', {
@@ -38,13 +43,13 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({
-  extended: false
+  extended: true
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(session({
   secret: 'ajdkaj adsjakl',
   resave: false,
