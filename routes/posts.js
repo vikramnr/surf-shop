@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer')
 const upload = multer({
-    dest:'uploads/'
+    dest: 'uploads/'
 })
 const Post = require('../models/post')
 const {
@@ -30,10 +30,10 @@ router.get('/:id', asyncErrorHandler(postShow));
 router.get('/:id/edit', asyncErrorHandler(postEdit));
 
 // save the post
-router.post('/', upload.array('images','2') ,asyncErrorHandler(postCreate));
+router.post('/', upload.array('images', '4'), asyncErrorHandler(postCreate));
 
 // update a post
-router.put('/:id', asyncErrorHandler(postUpdate));
+router.put('/:id', upload.array('images', '4'), asyncErrorHandler(postUpdate));
 
 
 // delete a post

@@ -1,12 +1,39 @@
 <h1>Edit Post!</h1>
 
-<form action="/posts/<%= post.id %>?_method=PUT" method="POST">
+<form id="postEditForm" action="/posts/<%= post.id %>?_method=PUT" method="POST" enctype="multipart/form-data">
 	<div><input type="text" name="post[title]" placeholder="Title" value="<%= post.title  %>"></div>
 	<div><input type="text" name="post[price]" placeholder="Price" value="<%= post.price  %>"></div>
 	<div>
 		<textarea name="post[description]" placeholder="Description"><%= post.description  %></textarea>
 	</div>
-	<div><input type="text" name="post[location]" placeholder="Location" value="<%= post.location  %>"></div>
+	<div>
+		<input type="text" name="post[location]" placeholder="Location" value="<%= post.location  %>">
+	</div>
+	<div>
+		<input id="imageUpload" type="file" name="images" id="" accept="images/*" multiple>
+	</div>
+	<% post.images.forEach(function(image,i){%>
+	<div>
+		<label for="Image <%=i %>">Delete ?</label>
+		<input type="checkbox" name="deleteImages[]" id="<%= i%>" class="imageDelete" value="<%= image.public_id %>">
+		<img src="<%= image.url%>" alt="image" width="200px">
+	</div>
+	<%});%>
 
 	<input type="submit">
 </form>
+<script>
+	let postEditForm = document.getElementById('postEditForm')
+	postEditForm.addEventListener('submit', function (event) {
+		let imageUpload = document.getElementById('imageUpload').files.length
+		let existImages = document.querySelectorAll('.imageDelete').length
+		let imageDelete = document.querySelectorAll('.imageDelete:checked').length
+		newTotal = existImages - imageDelete+ imageUpload
+		if( newTotal > 4){
+			event.preventDefault();
+			alert(`You need to remove atleast ${newTotal-4} images`)
+		}
+
+	})
+
+</script>
