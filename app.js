@@ -17,7 +17,7 @@ const session = require('express-session');
 const app = express();
 
 app.use(methodOverride('_method'));
-
+app.use(express.static('public'))
 // connect to db
 mongoose.connect('mongodb://vikram:viki@ds049848.mlab.com:49848/training', {
   useNewUrlParser: true

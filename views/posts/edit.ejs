@@ -19,7 +19,7 @@
 		<img src="<%= image.url%>" alt="image" width="200px">
 	</div>
 	<%});%>
-
+	<a href="/posts">Back to Posts</a>
 	<input type="submit">
 </form>
 <script>
@@ -28,8 +28,8 @@
 		let imageUpload = document.getElementById('imageUpload').files.length
 		let existImages = document.querySelectorAll('.imageDelete').length
 		let imageDelete = document.querySelectorAll('.imageDelete:checked').length
-		newTotal = existImages - imageDelete+ imageUpload
-		if( newTotal > 4){
+		newTotal = existImages - imageDelete + imageUpload
+		if (newTotal > 4) {
 			event.preventDefault();
 			alert(`You need to remove atleast ${newTotal-4} images`)
 		}
