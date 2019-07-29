@@ -17,6 +17,7 @@ module.exports = {
         });
     },
     postNew(req, res, next) {
+        
         res.render('posts/new')
     },
     async postCreate(req, res, next) {
@@ -35,9 +36,11 @@ module.exports = {
             .send();
         req.body.post.coordinates = resCoding.body.features[0].geometry.coordinates
         let post = await Post.create(req.body.post);
+        req.session.success='Post created'
         res.redirect(`/posts/${post._id}`);
     },
     async postShow(req, res, next) {
+        //throw new Error('An error occurred. Please contact your')
         let post = await Post.findById(req.params.id);
         res.render('posts/show', {
             post
