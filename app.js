@@ -65,6 +65,11 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use(function (req, res, next) {
+  req.user = {
+    '_id':'5d49ada32e44681bd8e4aaa8',
+    'username':'ian'
+  }
+  res.locals.username = req.user;
   res.locals.title ='Surf Shop';
   res.locals.success = req.session.success ||'';
   delete req.session.success
