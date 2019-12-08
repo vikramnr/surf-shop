@@ -2,44 +2,46 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const {
-  postRegister,postLogin,getLogout
+  postRegister,
+  postLogin,
+  getLogout,
+  landingPage,
+  getLogin,
+  getRegister,
+  getProfile,
+  updateProfile
 } = require('../controllers/index');
 const {
-  asyncErrorHandler
+  asyncErrorHandler,
+  isLoggedIn,
+  isValidPassword,
+  changePassword
 } = require('../middleware/index');
 
 // Home page
-router.get('/', (req, res, next) => {
-  res.render('index', {
-    title: 'Surf Shop'
-  });
-});
+router.get('/', asyncErrorHandler(landingPage));
 
 // register form
-router.get('/register', (req, res, next) => {
-  res.send('register here');
-});
+router.get('/register', getRegister);
 
 // register user
 router.post('/register', asyncErrorHandler(postRegister));
 
 // user login form
-router.get('/login', (req, res, next) => {
-  res.send('login here');
-});
+router.get('/login', getLogin);
 
 // login user
-router.post('/login',postLogin);
+router.post('/login', asyncErrorHandler(postLogin));
 
 // user profile form
-router.get('/profile', (req, res, next) => {
-  res.send('get profile here');
-});
+router.get('/profile', asyncErrorHandler(getProfile));
 
 // profile update form
-router.put('/profile/:user_id', (req, res, next) => {
-  res.send('update your profile');
-});
+router.put('/profile', isLoggedIn,
+   asyncErrorHandler(isValidPassword),
+   asyncErrorHandler(changePassword),
+   asyncErrorHandler(updateProfile) 
+  );
 
 // forgot password
 router.get('/forgot-pw', (req, res, next) => {
@@ -63,5 +65,6 @@ router.put('/reset-pw/:id', (req, res, next) => {
 
 // logout
 router.get('/logout',getLogout);
+
 
 module.exports = router;

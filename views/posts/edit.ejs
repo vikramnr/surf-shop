@@ -1,7 +1,7 @@
 <% layout('layouts/boilerplate') -%>
 <form id="postEditForm" action="/posts/<%= post.id %>?_method=PUT" method="POST" enctype="multipart/form-data">
 	<div><input type="text" name="post[title]" placeholder="Title" value="<%= post.title  %>"></div>
-	<div><input type="text" name="post[price]" placeholder="Price" value="<%= post.price  %>"></div>
+	<div><input type="number" name="post[price]" placeholder="Price" step=".01" value="<%= post.price  %>"></div>
 	<div>
 		<textarea name="post[description]" placeholder="Description"><%= post.description  %></textarea>
 	</div>

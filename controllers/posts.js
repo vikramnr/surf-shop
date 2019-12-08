@@ -1,19 +1,27 @@
 const Post = require('../models/post');
 const clodinary = require('cloudinary');
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+
 const geocodingClient = mbxGeocoding({
     accessToken: process.env.MAPBOX_TOKEN
 });
-clodinary.config({
-    cloud_name: 'dg6pzjhcw',
-    api_key: '616768382369741',
-    api_secret: 'GFscWk-G63Xx2BbGBRAAubGP12k'
-})
+
+const mapboxToken = process.env.MAPBOX_TOKEN;
+const {
+    cloudinary
+} = require('../cloudinary');
+
 module.exports = {
     async indexPosts(req, res, next) {
-        let posts = await Post.find({});
+        let posts = await Post.paginate({}, {
+            page: req.query.page || 1,
+            limit: 10,
+            sort: '-_id'
+        });
+        posts.page = Number(posts.page)
         res.render('posts/index', {
-            posts
+            posts,
+            mapboxToken
         });
     },
     postNew(req, res, next) {
@@ -22,20 +30,22 @@ module.exports = {
     async postCreate(req, res, next) {
         req.body.post.images = []
         for (const file of req.files) {
-            let image = await clodinary.v2.uploader.upload(file.path);
             req.body.post.images.push({
-                url: image.secure_url,
-                public_id: image.public_id
-            })
+                url: file.secure_url,
+                public_id: file.public_id
+            });
         }
         let resCoding = await geocodingClient.forwardGeocode({
                 query: req.body.post.location,
                 limit: 1
             })
             .send();
-        req.body.post.coordinates = resCoding.body.features[0].geometry.coordinates
-        let post = await Post.create(req.body.post);
-        req.session.success = 'Post created'
+        req.body.post.geometry = resCoding.body.features[0].geometry;
+        req.body.post.author = req.user._id;
+        let post = new Post(req.body.post);
+        post.properties.description = `<strong><a href="/posts/${post._id}">${post.title}</a></strong><p>${post.location}</p>
+        <p>${post.description.substring(0, 20)}...</p>`;
+        await post.save();
         res.redirect(`/posts/${post._id}`);
     },
     async postShow(req, res, next) {
@@ -47,23 +57,26 @@ module.exports = {
                     '_id': -1
                 }
             },
-            populate:{
+            populate: {
                 path: 'author',
                 model: 'User'
             }
         });
+        const floorRating = post.calculateAvgRating();
         res.render('posts/show', {
-            post
+            post,
+            mapboxToken,
+            floorRating
         })
     },
-    async postEdit(req, res, next) {
-        let post = await Post.findById(req.params.id);
-        res.render('posts/edit', {
-            post
-        })
+    postEdit(req, res, next) {
+        res.render('posts/edit')
     },
     async postUpdate(req, res, next) {
-        let post = await Post.findById(req.params.id);
+        const {
+            post
+        } = res.locals;
+
         if (req.body.deleteImages && req.body.deleteImages.length) {
             let deleteImages = req.body.deleteImages;
             for (const public_id of deleteImages) {
@@ -78,11 +91,10 @@ module.exports = {
         }
         if (req.files) {
             for (const file of req.files) {
-                let image = await clodinary.v2.uploader.upload(file.path)
-                post.images.push({
-                    url: image.secure_url,
-                    public_id: image.public_id
-                })
+                req.body.post.images.push({
+                    url: file.secure_url,
+                    public_id: file.public_id
+                });
             }
         }
         if (req.body.post.location !== post.location) {
@@ -91,18 +103,20 @@ module.exports = {
                     limit: 1
                 })
                 .send();
-            post.coordinates = resCoding.body.features[0].geometry.coordinates
+            post.geometry = resCoding.body.features[0].geometry;
             post.location = req.body.post.location
         }
 
         post.title = req.body.post.title
         post.description = req.body.post.description
         post.price = req.body.post.price
-        post.save();
+        post.properties.description = `<strong><a href="/posts/${post._id}">${post.title}</a></strong><p>${post.location}</p>
+        <p>${post.description.substring(0, 20)}...</p>`;
+        await post.save();
         res.redirect(`/posts/${post.id}`);
     },
     async postDelete(req, res, next) {
-        let post = await Post.findById(req.params.id)
+        const { post } = res.locals;
         for (const image of post.images) {
             await clodinary.v2.uploader.destroy(image.public_id);
         }

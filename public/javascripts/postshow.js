@@ -3,14 +3,14 @@ mapboxgl.accessToken = 'pk.eyJ1Ijoia2FuZWtpIiwiYSI6ImNqeHN5aGQyNTBveTAzbm1tdTc4Z
 var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/light-v10',
-    center: post.coordinates,
+    center: post.geometry.coordinates,
     zoom: 5
 });
 
 var el = document.createElement('div');
 el.className = 'marker';
 new mapboxgl.Marker(el)
-    .setLngLat(post.coordinates)
+    .setLngLat(post.geometry.coordinates)
     .setPopup(new mapboxgl.Popup({
             offset: 25
         }) // add popups

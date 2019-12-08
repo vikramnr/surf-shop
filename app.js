@@ -3,7 +3,6 @@ require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
-const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const passport = require('passport');
@@ -14,14 +13,17 @@ const postsRouter = require('./routes/posts');
 const revieswRouter = require('./routes/reviews');
 const User = require('./models/user');
 const session = require('express-session');
+var favicon = require('serve-favicon');
 const engine = require('ejs-mate')
 const app = express();
-
+//const seedPosts = require('./seeds')
+// seedPosts()
 app.use(methodOverride('_method'));
 app.use(express.static('public'))
 // connect to db
 mongoose.connect('mongodb://vikram:viki@ds049848.mlab.com:49848/training', {
-  useNewUrlParser: true
+  useNewUrlParser: true,
+  useCreateIndex: true
 }, (err) => {
   if (err) {
     console.log(err);
@@ -45,7 +47,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
-app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -65,10 +66,12 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use(function (req, res, next) {
-  req.user = {
-    '_id':'5d49ada32e44681bd8e4aaa8',
-    'username':'ian'
-  }
+  // req.user = {
+  //   //ObjectId(""),
+  //   // ObjectId("5dcfded64538880614ebe655"),
+  //   '_id':'5dcfded64538880614ebe655',
+  //   'username':'ian2'
+  // }
   res.locals.username = req.user;
   res.locals.title ='Surf Shop';
   res.locals.success = req.session.success ||'';
@@ -86,6 +89,7 @@ app.use('/posts/:id/reviews', revieswRouter);
 app.use(function (req, res, next) {
   next(createError(404));
 });
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
 // error handler
 app.use(function (err, req, res, next) {
@@ -96,8 +100,8 @@ app.use(function (err, req, res, next) {
   // // render the error page
   // res.status(err.status || 500);
   // res.render('error');
-  console.log(err.message);
-  req.session.error = 'An error occured. Please contact our support team'
+  console.log(err);
+  req.session.error = err.message
   res.redirect('back');
 });
 

@@ -7,6 +7,22 @@
 <div>
     <%= post.location %>
 </div>
+<div>
+    Avg Rating: <%= post.avgRating  %> stars
+    <hr>
+    <% for(let i=0; i<5; i++) {%>
+    <%if(i < floorRating) {%>
+    <!-- als -->
+    <i class="fas fa-star"></i>
+    <%} else if((post.avgRating - i)> 0 
+          && (post.avgRating - i) <1) {%>
+    <!-- als -->
+    <i class="fas fa-star-half-alt"></i>
+    <%}else {%>
+    <i class="far fa-star"></i>
+    <%}%>
+      <%}%>
+</div>
 <div id='map'></div>
 <% post.images.forEach(function(image){%>
 <div>
@@ -14,72 +30,87 @@
 </div>
 <%});%>
 <a href="/posts">Back to Posts</a>
-<form action="/posts/<%= post.id%>?_method=DELETE"method="POST">
-    <button type="submit">Delete post</button>
-</form>
+
+<% if(username && post.author.equals(username._id)){ %>
+<div>
+    <a href="/posts/<%= post.id%>/edit">Edit</a>
+    <form action="/posts/<%= post.id%>?_method=DELETE" method="POST">
+        <button type="submit">Delete post</button>
+    </form>
+</div>
+<% } %>
+
 <% post.reviews.forEach(function(review){%>
 author:<%= review.author.username%>
-    body:<%= review.body%>
-    rating: <%= review.rating%>
-    <% if(review.author.equals(username._id) ) {%>
-    
-    <div>
+body:<%= review.body%>
+rating: <%= review.rating%>
+<% if(username && review.author.equals(username._id) ) {%>
+
+<div>
     <hr>
     <button class="toggle-edit-form">Edit</button>
-    
-    <form 
-    action="/posts/<%= post.id%>/reviews/<%= review.id %>?_method=PUT"method="POST"class='edit-review-form'>
-    <textarea name="review[body]" id=""cols="30"rows="10">
+
+    <form action="/posts/<%= post.id%>/reviews/<%= review.id %>?_method=PUT" method="POST" class='edit-review-form'>
+        <textarea name="review[body]" id="" cols="30" rows="10">
     <%= review.body %>
     </textarea>
-  <fieldset class="starability-basic">
-  <legend>Rating:</legend>
-  <button class="clear-rating" type="button">Clear</button>
-  <input type="radio"id="edit-rate0"class="input-no-rate"name="review[rating]"value="0"checked aria-label="No rating."/>
-  <input type="radio"id="edit-rate1"name="review[rating]"value="1"/>
-  <label for="edit-rate1"title="Terrible">1 star</label>
-  <input type="radio"id="edit-rate2"name="review[rating]"value="2"/>
-  <label for="edit-rate2"title="Not good">2 stars</label>
-  <input type="radio"id="edit-rate3"name="review[rating]"value="3"/>
-  <label for="edit-rate3"title="Average">3 stars</label>
-  <input type="radio"id="edit-rate4"name="review[rating]"value="4"/>
-  <label for="edit-rate4"title="Very good">4 stars</label>
-  <input type="radio"id="edit-rate5"name="review[rating]"value="5"/>
-  <label for="edit-rate5"title="Amazing">5 stars</label>
-</fieldset>
-    <input type="submit"value='update'>
+
+
+        <fieldset class="starability-basic">
+            <legend>Rating:</legend>
+            <button class="clear-rating" type="button">Clear</button>
+            <input type="radio" id="edit-rate0" class="input-no-rate" name="review[rating]" value="0" checked
+                aria-label="No rating." />
+            <input type="radio" id="edit-rate1" name="review[rating]" value="1" />
+            <label for="edit-rate1" title="Terrible">1 star</label>
+            <input type="radio" id="edit-rate2" name="review[rating]" value="2" />
+            <label for="edit-rate2" title="Not good">2 stars</label>
+            <input type="radio" id="edit-rate3" name="review[rating]" value="3" />
+            <label for="edit-rate3" title="Average">3 stars</label>
+            <input type="radio" id="edit-rate4" name="review[rating]" value="4" />
+            <label for="edit-rate4" title="Very good">4 stars</label>
+            <input type="radio" id="edit-rate5" name="review[rating]" value="5" />
+            <label for="edit-rate5" title="Amazing">5 stars</label>
+        </fieldset>
+        <input type="submit" value='update'>
     </form>
     <script>
-        $('#edit-rate<%= review.rating %>').prop('checked',true);
+        $('#edit-rate<%= review.rating %>').prop('checked', true);
+
     </script>
-    <form action="/posts/<%= post.id%>/reviews/<%= review.id %>?_method=DELETE"method="POST">
-        <input type="submit"value='delete'>
+    <form action="/posts/<%= post.id%>/reviews/<%= review.id %>?_method=DELETE" method="POST">
+        <input type="submit" value='delete'>
     </form>
-    </div>
-    <%} %>
+</div>
+<%} %>
 <%})%>
+<% if(username) { %>
 <h2>
-Leave a review
+    Leave a review
 </h2>
-<form action="/posts/<%= post.id%>/reviews"method="POST">
-    <textarea name="review[body]" id=""cols="30"rows="10"></textarea>
+
+<form action="/posts/<%= post.id%>/reviews" method="POST">
+    <textarea name="review[body]" id="" cols="30" rows="10"></textarea>
     <fieldset class="starability-basic">
-  <legend>Rating:</legend>
-  <button class="clear-rating" type="button">Clear</button>
-  <input type="radio"id="rate0"class="input-no-rate"name="review[rating]"value="0"checked aria-label="No rating."/>
-  <input type="radio"id="rate1"name="review[rating]"value="1"/>
-  <label for="rate1"title="Terrible">1 star</label>
-  <input type="radio"id="rate2"name="review[rating]"value="2"/>
-  <label for="rate2"title="Not good">2 stars</label>
-  <input type="radio"id="rate3"name="review[rating]"value="3"/>
-  <label for="rate3"title="Average">3 stars</label>
-  <input type="radio"id="rate4"name="review[rating]"value="4"/>
-  <label for="rate4"title="Very good">4 stars</label>
-  <input type="radio"id="rate5"name="review[rating]"value="5"/>
-  <label for="rate5"title="Amazing">5 stars</label>
-</fieldset>
+        <legend>Rating:</legend>
+        <button class="clear-rating" type="button">Clear</button>
+        <input type="radio" id="rate0" class="input-no-rate" name="review[rating]" value="0" checked
+            aria-label="No rating." />
+        <input type="radio" id="rate1" name="review[rating]" value="1" />
+        <label for="rate1" title="Terrible">1 star</label>
+        <input type="radio" id="rate2" name="review[rating]" value="2" />
+        <label for="rate2" title="Not good">2 stars</label>
+        <input type="radio" id="rate3" name="review[rating]" value="3" />
+        <label for="rate3" title="Average">3 stars</label>
+        <input type="radio" id="rate4" name="review[rating]" value="4" />
+        <label for="rate4" title="Very good">4 stars</label>
+        <input type="radio" id="rate5" name="review[rating]" value="5" />
+        <label for="rate5" title="Amazing">5 stars</label>
+    </fieldset>
     <input type="submit">
 </form>
+<% } else { %>
+<h4><a href="/login?returnTo=true">Sign up and leave a Review</a></h4>
+<% } %>
 <script>
 </script>
-

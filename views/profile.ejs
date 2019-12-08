@@ -1,0 +1,51 @@
+<% layout('layouts/boilerplate') -%>
+
+
+<h3>
+    <%= username.username %>'s Profile
+</h3>
+
+<p>Recent Posts</p>
+
+<% posts.forEach((post) => { %>
+- <a href="/posts/<%=post.id%>"><%=post.title%></a>
+<br>
+<%}) %>
+
+
+<p>
+    Update Info:
+</p>
+
+<form  action="/profile?_method=PUT" method="post">
+    <div>
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" placeholder="Username" value="<%=username.username%>" autofocus
+            required>
+    </div>
+    <div>
+        <label for="current-password">password(this is required)</label>
+        <input type="password" name="currentPassword" id="current-password" placeholder="current password" required>
+    </div>
+    <div>
+        <label for="new password">New password</label>
+        <input type="password" name="newPassword" id="new-password" placeholder="new passord">
+    </div>
+    <div>
+        <label for="password-confirmation">password-confirmation</label>
+        <input type="password" name="passwordConfirmation" id="password-confirmation" placeholder="re type your new password">
+    </div>
+    <div id="validation-message"></div>
+    <div>
+        <label for="email">email</label>
+        <input type="email" name="email" id="email" placeholder="email" value="<%= username.email%>">
+    </div>
+    <div>
+        <label for="image">Image
+        </label>
+        <input type="file" name="image" id="image">
+    </div>
+    <input id="update-profile" type="submit" value="Update Profile">
+</form>
+
+<script src="/javascripts/profile.js"></script>

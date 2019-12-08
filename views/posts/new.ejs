@@ -4,7 +4,7 @@
 <form action="/posts" method="POST" enctype="multipart/form-data">
     <input type="text"  placeholder="title" name="post[title]">
     
-    <input type="text" placeholder="price" name="post[price]">
+    <input type="number" placeholder="price" step=".01" name="post[price]">
     <textarea name="post[description]" id="" cols="30" rows="10" placeholder="desc"></textarea>
     <div>
         <input type="file" name="images" id="" accept="images/*" multiple>
