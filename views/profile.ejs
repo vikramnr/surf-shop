@@ -2,22 +2,21 @@
 
 
 <h3>
+    <img src="<%= username.image.secure_url%>" alt="profile-pic" class="profile-image">
     <%= username.username %>'s Profile
 </h3>
 
 <p>Recent Posts</p>
-
 <% posts.forEach((post) => { %>
 - <a href="/posts/<%=post.id%>"><%=post.title%></a>
 <br>
 <%}) %>
 
-
 <p>
     Update Info:
 </p>
 
-<form  action="/profile?_method=PUT" method="post">
+<form  action="/profile?_method=PUT" method="post" enctype="multipart/form-data">
     <div>
         <label for="username">Username</label>
         <input type="text" name="username" id="username" placeholder="Username" value="<%=username.username%>" autofocus
@@ -43,6 +42,7 @@
     <div>
         <label for="image">Image
         </label>
+        <small>existing image will be deleted</small>
         <input type="file" name="image" id="image">
     </div>
     <input id="update-profile" type="submit" value="Update Profile">

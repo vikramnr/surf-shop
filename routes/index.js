@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const multer = require('multer');
 const {
   postRegister,
   postLogin,
@@ -17,6 +18,12 @@ const {
   isValidPassword,
   changePassword
 } = require('../middleware/index');
+const {
+  storage
+} = require('../cloudinary/index');
+const upload = multer({
+  storage
+});
 
 // Home page
 router.get('/', asyncErrorHandler(landingPage));
@@ -25,7 +32,7 @@ router.get('/', asyncErrorHandler(landingPage));
 router.get('/register', getRegister);
 
 // register user
-router.post('/register', asyncErrorHandler(postRegister));
+router.post('/register', upload.single('image'), asyncErrorHandler(postRegister));
 
 // user login form
 router.get('/login', getLogin);
@@ -37,11 +44,11 @@ router.post('/login', asyncErrorHandler(postLogin));
 router.get('/profile', asyncErrorHandler(getProfile));
 
 // profile update form
-router.put('/profile', isLoggedIn,
-   asyncErrorHandler(isValidPassword),
-   asyncErrorHandler(changePassword),
-   asyncErrorHandler(updateProfile) 
-  );
+router.put('/profile', isLoggedIn, upload.single('image'),
+  asyncErrorHandler(isValidPassword),
+  asyncErrorHandler(changePassword),
+  asyncErrorHandler(updateProfile)
+);
 
 // forgot password
 router.get('/forgot-pw', (req, res, next) => {
@@ -64,7 +71,7 @@ router.put('/reset-pw/:id', (req, res, next) => {
 });
 
 // logout
-router.get('/logout',getLogout);
+router.get('/logout', getLogout);
 
 
 module.exports = router;

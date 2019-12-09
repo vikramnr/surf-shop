@@ -21,9 +21,10 @@ const app = express();
 app.use(methodOverride('_method'));
 app.use(express.static('public'))
 // connect to db
-mongoose.connect('mongodb://vikram:viki@ds049848.mlab.com:49848/training', {
+mongoose.connect(`mongodb://${process.env.MONGO_URL}`, {
   useNewUrlParser: true,
-  useCreateIndex: true
+  useCreateIndex: true,
+  useUnifiedTopology: true
 }, (err) => {
   if (err) {
     console.log(err);
