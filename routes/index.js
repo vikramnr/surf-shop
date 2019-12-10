@@ -10,7 +10,11 @@ const {
   getLogin,
   getRegister,
   getProfile,
-  updateProfile
+  updateProfile,
+  getForgotPw,
+  getReset,
+  putForgotPw,
+  putReset
 } = require('../controllers/index');
 const {
   asyncErrorHandler,
@@ -51,24 +55,16 @@ router.put('/profile', isLoggedIn, upload.single('image'),
 );
 
 // forgot password
-router.get('/forgot-pw', (req, res, next) => {
-  res.send('enter mail id');
-});
+router.get('/forgot-password', getForgotPw);
 
 // update user and token
-router.put('/forgot-pw', (req, res, next) => {
-  res.send('updates user password and token');
-});
+router.put('/forgot-password', asyncErrorHandler(putForgotPw));
 
 // get user details for password reset
-router.get('/reset-pw/:id', (req, res, next) => {
-  res.send('enter mail id');
-});
+router.get('/reset/:token', asyncErrorHandler(getReset));
 
 //update password
-router.put('/reset-pw/:id', (req, res, next) => {
-  res.send('enter mail id');
-});
+router.put('/reset/:token', asyncErrorHandler(putReset));
 
 // logout
 router.get('/logout', getLogout);
