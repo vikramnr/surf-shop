@@ -17,7 +17,7 @@ var favicon = require('serve-favicon');
 const engine = require('ejs-mate')
 const app = express();
 //const seedPosts = require('./seeds')
-// seedPosts()
+//seedPosts()
 app.use(methodOverride('_method'));
 app.use(express.static('public'))
 // connect to db
@@ -87,9 +87,12 @@ app.use('/posts', postsRouter);
 app.use('/posts/:id/reviews', revieswRouter);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
+app.use(function(req, res, next) {
+  const err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
+
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
 // error handler

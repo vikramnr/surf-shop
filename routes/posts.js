@@ -14,7 +14,8 @@ const Post = require('../models/post')
 const {
     asyncErrorHandler,
     isLoggedIn,
-    isAuthor
+    isAuthor,
+    searchAndFilter
 } = require('../middleware/index');
 const {
     indexPosts,
@@ -26,7 +27,7 @@ const {
     postDelete
 } = require('../controllers/posts');
 /* GET post index /posts */
-router.get('/', asyncErrorHandler(indexPosts));
+router.get('/', asyncErrorHandler(searchAndFilter),asyncErrorHandler(indexPosts));
 
 // create a new post
 router.get('/new', isLoggedIn, asyncErrorHandler(postNew));
@@ -35,13 +36,13 @@ router.get('/new', isLoggedIn, asyncErrorHandler(postNew));
 router.get('/:id', asyncErrorHandler(postShow));
 
 // Edit one post
-router.get('/:id/edit',isLoggedIn ,asyncErrorHandler(isAuthor), postEdit);
+router.get('/:id/edit', isLoggedIn, asyncErrorHandler(isAuthor), postEdit);
 
 // update a post
-router.put('/:id', isLoggedIn,asyncErrorHandler(isAuthor), upload.array('images', '4'), asyncErrorHandler(postUpdate));
+router.put('/:id', isLoggedIn, asyncErrorHandler(isAuthor), upload.array('images', '4'), asyncErrorHandler(postUpdate));
 
 // delete a post
-router.delete('/:id', isLoggedIn,asyncErrorHandler(isAuthor), asyncErrorHandler(postDelete));
+router.delete('/:id', isLoggedIn, asyncErrorHandler(isAuthor), asyncErrorHandler(postDelete));
 
 
 // save the post

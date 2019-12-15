@@ -13,15 +13,24 @@ const {
 
 module.exports = {
     async indexPosts(req, res, next) {
-        let posts = await Post.paginate({}, {
+        console.log('im here');
+        const {
+            dbQuery
+        } = res.locals;
+        delete res.locals.dbQuery;
+        let posts = await Post.paginate(dbQuery, {
             page: req.query.page || 1,
-            limit: 10,
+            limit: 10,  
             sort: '-_id'
         });
         posts.page = Number(posts.page)
+        if (!posts.docs.length && res.locals.query ) {
+            res.locals.error = 'No posts found with search criteria';
+        }
         res.render('posts/index', {
             posts,
-            mapboxToken
+            mapboxToken,
+            title: 'Post Home'
         });
     },
     postNew(req, res, next) {
@@ -62,7 +71,8 @@ module.exports = {
                 model: 'User'
             }
         });
-        const floorRating = post.calculateAvgRating();
+        // const floorRating = post.calculateAvgRating();
+        const floorRating = post.avgRating
         res.render('posts/show', {
             post,
             mapboxToken,
@@ -116,7 +126,9 @@ module.exports = {
         res.redirect(`/posts/${post.id}`);
     },
     async postDelete(req, res, next) {
-        const { post } = res.locals;
+        const {
+            post
+        } = res.locals;
         for (const image of post.images) {
             await clodinary.v2.uploader.destroy(image.public_id);
         }
