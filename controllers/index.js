@@ -18,10 +18,13 @@ sgMail.setApiKey(process.env.SEND_GRID);
 
 module.exports = {
     async landingPage(req, res, next) {
-        const posts = await Post.find({})
+        const recentPosts = await Post.find({}).sort('-_id').exec();
+        const posts = recentPosts.slice(0, 3);
+
         res.render('index', {
             posts,
-            mapboxToken
+            mapboxToken,
+            title: 'Surf Shop - Home' 
         })
     },
     getRegister(req, res, next) {

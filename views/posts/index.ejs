@@ -1,37 +1,38 @@
-<% layout('layouts/boilerplate') -%>
-<h1 style="display:inline">posts index </h1>
-<a href="/posts/new">New post</a>
 
-<%include ../partials/paginate-post %>
+<% layout('layouts/index-boilerplate') -%>
+<div class="container">
+<div class="container-fluid" id="map">
+</div>
+<hr>
 <div class="containter-fluid">
-    <div class="row">
-        <div class="col-4">
-            <%include ../partials/search-filter %>
-        </div>
-        <div class="col-8">
-            <div id='map'></div>     
-        </div>
-    </div>
+    <%include ../partials/search-filter %>
 </div>
 
-<% posts.docs.forEach(function(post) {%>
-<div>
-    <h1><%= post.title %></h1>
-    <p><%= post.price %></p>
-    <div>
-        <%= post.description %>
-    </div>
-    <div>
-        <%= post.location %>
-    </div>
-    <a href="/posts/<%=post.id%>">Show more...</a>
 </div>
+<div class="container">
+    <%include ../partials/paginate-post %>
+    <% posts.docs.forEach(function(post) {%>
+    <div>
+        <h1><%= post.title %></h1>
+        <p>$<%= post.price %></p>
+        <div>
+            <%= post.description %>
+        </div>
+        <div>
+            Location: <strong>
+                <%= post.location %>
+            </strong>
+        </div>
+        <a href="/posts/<%=post.id%>">Show more...</a>
+    </div>
 
-<%});%>
+    <%});%>
+    <%include ../partials/paginate-post %>
+    <hr>
+</div>
 
 <script>
-    mapboxgl.accessToken = "<%= mapboxToken %>";
-    var posts = {features: <%- JSON.stringify(posts.docs) %>};
-</script>
-<script src="/javascripts/allPostsClusterMap.js"></script>
-<%include ../partials/paginate-post %>
+        mapboxgl.accessToken = "<%= mapboxToken %>";
+        var posts = {features: <%- JSON.stringify(posts.docs) %>};
+    </script>
+    <script src="/javascripts/allPostsClusterMap.js"></script>

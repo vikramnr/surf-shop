@@ -16,10 +16,12 @@ const session = require('express-session');
 var favicon = require('serve-favicon');
 const engine = require('ejs-mate')
 const app = express();
-//const seedPosts = require('./seeds')
-//seedPosts()
+// const seedPosts = require('./seeds')
+// seedPosts()
 app.use(methodOverride('_method'));
 app.use(express.static('public'))
+app.locals.moment = require('moment');
+
 // connect to db
 mongoose.connect(`mongodb://${process.env.MONGO_URL}`, {
   useNewUrlParser: true,
@@ -104,7 +106,7 @@ app.use(function (err, req, res, next) {
   // // render the error page
   // res.status(err.status || 500);
   // res.render('error');
-  console.log(err);
+  // console.log(err);
   req.session.error = err.message
   res.redirect('back');
 });

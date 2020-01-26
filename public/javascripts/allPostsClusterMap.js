@@ -9,7 +9,7 @@ map.addControl(new MapboxGeocoder({
     accessToken: mapboxgl.accessToken
 }));
 
-map.on('load', function() {
+map.on('load', function () {
     // Add a new source from our GeoJSON data and set the
     // 'cluster' option to true. GL-JS will add the point_count property to your source data.
     map.addSource("posts", {
@@ -77,26 +77,28 @@ map.on('load', function() {
         }
     });
 
-    map.on('click', 'unclustered-point', function(e) {
-      var coordinates = e.features[0].geometry.coordinates.slice();
-      var description = e.features[0].properties.description;
+    map.on('click', 'unclustered-point', function (e) {
+        var coordinates = e.features[0].geometry.coordinates.slice();
+        var description = e.features[0].properties.description;
 
-      // Ensure that if the map is zoomed out such that multiple
-      // copies of the feature are visible, the popup appears
-      // over the copy being pointed to.
-      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-      }
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the popup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
 
-      new mapboxgl.Popup()
-        .setLngLat(coordinates)
-        .setHTML(description)
-        .addTo(map);
+        new mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setHTML(description)
+            .addTo(map);
     });
 
     // inspect a cluster on click
-    map.on('click', 'clusters', function(e) {
-        var features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+    map.on('click', 'clusters', function (e) {
+        var features = map.queryRenderedFeatures(e.point, {
+            layers: ['clusters']
+        });
         var clusterId = features[0].properties.cluster_id;
         map.getSource('posts').getClusterExpansionZoom(clusterId, function (err, zoom) {
             if (err)
@@ -109,14 +111,20 @@ map.on('load', function() {
         });
     });
 
-    var mouseenterCursor = function() {
+    var mouseenterCursor = function () {
         map.getCanvas().style.cursor = 'pointer';
     };
-    var mouseLeaveCursor = function() {
+    var mouseLeaveCursor = function () {
         map.getCanvas().style.cursor = '';
     };
     map.on('mouseenter', 'clusters', mouseenterCursor);
     map.on('mouseleave', 'clusters', mouseLeaveCursor);
     map.on('mouseenter', 'unclustered-point', mouseenterCursor);
     map.on('mouseleave', 'unclustered-point', mouseLeaveCursor);
-}); 
+
+});
+
+// Disable zoom from mouse scrollwheel
+map.scrollZoom.disable();
+// Add zoom and rotation controls to the map.
+map.addControl(new mapboxgl.NavigationControl());

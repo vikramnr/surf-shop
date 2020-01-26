@@ -20,7 +20,6 @@ function escapeRegExp(string) {
 const middleware = {
 	asyncErrorHandler: (fn) =>
 		(req, res, next) => {
-			console.log('insider me');
 			Promise.resolve(fn(req, res, next))
 				.catch(next);
 		},
@@ -92,7 +91,6 @@ const middleware = {
 		if (req.file) await cloudinary.v2.uploader.destroy(req.file.public_id);
 	},
 	searchAndFilter : async (req, res, next) => {
-		console.log('insider me+dhakshaksjhkj');
 		let queryKeys = Object.keys(req.query);
 		if (queryKeys.length) {
 			let dbQuery = [];

@@ -13,7 +13,6 @@ const {
 
 module.exports = {
     async indexPosts(req, res, next) {
-        console.log('im here');
         const {
             dbQuery
         } = res.locals;

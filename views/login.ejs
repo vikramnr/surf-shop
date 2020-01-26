@@ -1,16 +1,21 @@
-<% layout('layouts/boilerplate') -%>
+<% layout('layouts/mimal-boilerplate') -%>
+<h1>
+	Sign In
+</h1>
+<hr>
 
 <form action="/login" method="POST">
-	<div>
-		<label for="username">Username:</label>
-		<input type="text" id="username" name="username" placeholder="username" required>
+	<div class="form-group">
+		<label for="username">Username</label>
+		<input type="text" class="form-control" id="username" name="username" placeholder="topSurfer229" required>
 	</div>
-	<div>
-		<label for="password">Password:</label>
-		<input type="password" id="password" name="password" placeholder="password" required>
+	<div class="form-group">
+		<label for="password">Password</label>
+		<input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+		<small>
+			<a href="/forgot-password">Forgot Password ?</a>
+		</small>
 	</div>
-	
-	<input type="submit">
-</form>
 
-<a href="/forgot-password">Forgot Password ?</a>
+	<input type="submit" class="btn btn-primary mb-2">
+</form>

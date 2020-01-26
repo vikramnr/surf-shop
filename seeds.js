@@ -5,7 +5,7 @@ const cities = require('./cities');
 async function seedPosts() {
 	//await Post.remove({});
 	await Post.deleteMany({});
-	for(const i of new Array(600)) {
+	for (const i of new Array(600)) {
 		const random1000 = Math.floor(Math.random() * 1000);
 		const random5 = Math.floor(Math.random() * 6);
 
@@ -20,6 +20,9 @@ async function seedPosts() {
 				coordinates: [cities[random1000].longitude, cities[random1000].latitude],
 			},
 			author: '5dd93920a597170a482349ae',
+			images: [{
+				url: 'https://res.cloudinary.com/devsprout/image/upload/v1561315599/surf-shop/surfboard.jpg'
+			}],
 			price: random1000,
 			avgRating: random5
 		}
