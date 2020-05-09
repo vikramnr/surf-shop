@@ -1,4 +1,4 @@
-# surf-shop
+# Surf Shop
 Add, Rate and Review shops around you !!!
 
 Udemy Project: Surf Shop. This is a hands-on project from the Udemy course - 
